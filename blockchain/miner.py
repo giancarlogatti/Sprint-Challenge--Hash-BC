@@ -1,5 +1,7 @@
 import hashlib
 import requests
+from random import seed
+from random import gauss
 
 import sys
 
@@ -23,8 +25,11 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
+    seed(1)
     proof = 0
-    #  TODO: Your code here
+    hash = hashlib.sha256(str(last_proof).encode()).hexdigest()
+    while not valid_proof(hash, proof):
+        proof = gauss(0, 1)
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -39,8 +44,9 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE912345, new hash 12345E88...
     """
 
-    # TODO: Your code here!
-    pass
+    guess = f"{proof}".encode()
+    new_hash = hashlib.sha256(guess).hexdigest()
+    return last_hash[-5:] == new_hash[:5]
 
 
 if __name__ == '__main__':
